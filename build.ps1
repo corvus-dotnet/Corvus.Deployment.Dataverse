@@ -72,6 +72,7 @@ $PowerShellModulesToPublish = @(
         AliasesToExport = @()
     }
 )
+$PowerShellGalleryApiKey = $env:PSGALLERY_API_KEY
 $SkipBuildModuleVersionCheck = $false
 $SkipPrAutoflowVersionCheck = $false
 $SkipPrAutoflowEnrollmentCheck = $true
