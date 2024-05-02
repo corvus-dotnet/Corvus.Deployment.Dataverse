@@ -13,7 +13,11 @@ param (
     [version] $BuildModuleVersion = "1.5.5",
 
     [Parameter()]
-    [version] $InvokeBuildModuleVersion = "5.10.3"
+    [version] $InvokeBuildModuleVersion = "5.10.3",
+
+    # Workaround for the GHA workflow templates passing in the additional arguments that this build does not require
+    [Parameter(ValueFromRemainingArguments=$true)]
+    $AdditionalArgs
 )
 
 $ErrorActionPreference = $ErrorActionPreference ? $ErrorActionPreference : 'Stop'
