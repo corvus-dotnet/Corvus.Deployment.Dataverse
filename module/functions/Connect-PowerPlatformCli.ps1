@@ -120,11 +120,3 @@ function Connect-PowerPlatformCli
     $script:isPowerAppCliConnected = $true
     $script:powerAppEnvironmentUrl = $safeEnvironmentUrl
 }
-
-# $splat = @{
-#     ProfileName = "readsource"
-#     EnvironmentUrl = "https://orgfacba7f2.crm4.dynamics.com"
-#     TenantId = "2e3c595a-e3f7-4c70-ad42-1bbda49a73d0"
-#     UseDeviceCodeFlow = $true
-# }
-# Connect-PowerPlatformCli @splat

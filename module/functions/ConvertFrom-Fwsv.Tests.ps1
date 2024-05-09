@@ -1,3 +1,7 @@
+# <copyright file="ConvertFrom-Fwsv.Tests.ps1" company="Endjin Limited">
+# Copyright (c) Endjin Limited. All rights reserved.
+# </copyright>
+
 Set-StrictMode -Version Latest
 
 BeforeAll {

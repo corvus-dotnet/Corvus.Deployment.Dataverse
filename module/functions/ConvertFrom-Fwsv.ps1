@@ -1,3 +1,6 @@
+# <copyright file="ConvertFrom-Fwsv.ps1" company="Endjin Limited">
+# Copyright (c) Endjin Limited. All rights reserved.
+# </copyright>
 
 function ConvertFrom-Fwsv {
     [CmdletBinding()]

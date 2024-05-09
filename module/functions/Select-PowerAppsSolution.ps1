@@ -1,3 +1,7 @@
+# <copyright file="Select-PowerAppsSolution.ps1" company="Endjin Limited">
+# Copyright (c) Endjin Limited. All rights reserved.
+# </copyright>
+
 function Select-PowerAppsSolution {
     param (
         [string]$SolutionName,
