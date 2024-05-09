@@ -46,25 +46,38 @@ function Connect-DataverseEnvironment
 
     $safeEnvironmentUrl = $EnvironmentUrl.TrimEnd('/')
 
-    $options = [Microsoft.Identity.Client.PublicClientApplicationOptions]@{
-        ClientId = $ClientId
-        TenantId = $TenantId
-        # AadAuthorityAudience = [Microsoft.Identity.Client.AadAuthorityAudience]::AzureAdMultipleOrgs
-        RedirectUri = "http://localhost"
+    # Acquire the token for CI/CD scenarios
+    if ($env:AZURE_CLIENT_ID -and $env:AZURE_CLIENT_SECRET -and $env:AZURE_TENANT_ID)
+    {
+        Write-Host "Attemping authentication via environment variables [ClientId=$env:AZURE_CLIENT_ID]"
+        $authResult = Get-MsalToken -ClientId $env:AZURE_CLIENT_ID `
+                                    -Scopes $authScope `
+                                    -TenantId $env:AZURE_TENANT_ID `
+                                    -ClientSecret ($env:AZURE_CLIENT_SECRET | ConvertTo-SecureString -AsPlainText)
     }
-    $publicClientApp = [Microsoft.Identity.Client.PublicClientApplicationBuilder]::CreateWithApplicationOptions($options).Build()
+    else {
+        # Acquire the token via Azure CLI authentication
+        $azCliAvailable = Get-Command az -ErrorAction Ignore
+        if ($azCliAvailable) {
+            $azCliTokenExpiry = & az account get-access-token --query expiresOn -o tsv
+            if ($azCliTokenExpiry -and [DateTime]::Parse($azCliTokenExpiry) -gt [DateTime]::UtcNow) {
+                Write-Host "Attemping authentication via Azure CLI"
+                $authResult = & az account get-access-token `
+                                    --resource $safeEnvironmentUrl | ConvertFrom-Json
+            }
+        }
 
-    $authScope = "$safeEnvironmentUrl/$Scope"
-    $baseType = [System.Collections.Generic.List`1]
-    $genericType = $baseType.MakeGenericType(@([System.String]))
-    $scopes = New-Object $genericType
-    $scopes.Add($authScope)
+        if (!$authResult) {
+            # Acquire token interactively
+            Write-Host "Triggering interactive authentication"
+            $authResult = Get-MsalToken -ClientId $ClientId `
+                                        -TenantId $TenantId `
+                                        -Interactive `
+                                        -Scopes $authScope |
+                                Select-Object -ExpandProperty AccessToken
+        }
+    }
 
-    # Acquire the token
-    # TODO: Support other auth methods
-    $authResult = $publicClientApp.AcquireTokenInteractive($scopes).ExecuteAsync().Result
-
-    $script:solutionName = $SolutionName
     $script:dataverseEnvironmentUrl = "$safeEnvironmentUrl/api/data/$ApiVersion"
     $script:dataverseAccessToken = $authResult.AccessToken | ConvertTo-SecureString -AsPlainText
 
