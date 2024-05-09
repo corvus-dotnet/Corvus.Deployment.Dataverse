@@ -69,7 +69,7 @@ $PowerShellModulesToPublish = @(
         ModulePath = "$here/module/Corvus.Deployment.Dataverse.psd1"
         FunctionsToExport = @("*")
         CmdletsToExport = @()
-        AliasesToExport = @()
+        AliasesToExport = @("Corvus.Deployment.Dataverse.tasks")
     }
 )
 $PowerShellGalleryApiKey = $env:PSGALLERY_API_KEY
