@@ -54,6 +54,10 @@ function Set-DataverseColumn
         [string] $Type,
 
         [Parameter()]
+        [ValidateSet("None","SystemRequired","ApplicationRequired","Recommended")]
+        [string] $RequiredLevel = "Recommended",
+
+        [Parameter()]
         [ValidateNotNullOrEmpty()]
         [string] $SchemaPrefix = $script:schemaPrefix,
 
@@ -94,7 +98,7 @@ function Set-DataverseColumn
             )
         }
         RequiredLevel = [ordered]@{
-            Value = "None"
+            Value = $RequiredLevel
             CanBeChanged = $true
             ManagedPropertyLogicalName = "canmodifyrequirementlevelsettings"
         }
