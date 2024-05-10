@@ -205,6 +205,7 @@ function Set-DataverseTable
 
     # Convert the data to JSON
     $jsonData = $data | ConvertTo-Json -Depth 100
+    Write-Verbose $jsonData
 
     # Send the HTTP request
     $statusCode = $null

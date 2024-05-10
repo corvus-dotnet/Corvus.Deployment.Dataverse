@@ -1,3 +1,5 @@
+$VerboseLogging = property VerboseLogging $false
+
 $EnvironmentUrl = property PowerAppsEnvironmentUrl ''
 $ProfileName = property PowerAppsAuthProfileName ''
 $SchemaPrefix = property DataverseSchemaPrefix ''
@@ -64,10 +66,10 @@ task DeployDataverseTables {
 
         $tableDefinition = Get-Content $tableDefintionFile | ConvertFrom-Yaml -Ordered
 
-        $tableId = Set-DataverseTable @tableDefinition
+        $tableId = Set-DataverseTable @tableDefinition -Verbose:$VerboseLogging
 
         foreach ($column in $tableDefinition.columns) {
-            $columnId = $tableId | Set-DataverseColumn @column
+            $columnId = $tableId | Set-DataverseColumn @column -Verbose:$VerboseLogging
         }
     }
 }
