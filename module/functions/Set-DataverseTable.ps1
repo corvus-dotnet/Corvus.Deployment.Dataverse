@@ -80,6 +80,9 @@ function Set-DataverseTable
         [bool] $EnableChangeTracking = $false,
 
         [Parameter()]
+        [bool] $EnableAuditing = $false,
+
+        [Parameter()]
         [Alias("additionalProperties")]
         $AdditionalAttributeMetadata = $null,
 
@@ -173,6 +176,11 @@ function Set-DataverseTable
         SchemaName = $qualifiedName
         LogicalName = $PrimaryKeyName
         EnableChangeTracking = $EnableChangeTracking
+        IsAuditEnabled = @{
+            Value = $EnableAuditing  
+            CanBeChanged = $true
+            ManagedPropertyLogicalName = "canmodifyauditsettings"  
+        }
     }
 
     # TODO: Refactor this to be pluggable and hence more extensible
