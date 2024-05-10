@@ -60,6 +60,10 @@ function Set-DataverseTable
         [string] $PrimaryKeyType,
 
         [Parameter(Mandatory = $true)]
+        [Alias("keyName")]
+        [string] $PrimaryKeyName,
+
+        [Parameter(Mandatory = $true)]
         [Alias("keyDisplayName")]
         [string] $PrimaryKeyDisplayName,
 
@@ -67,6 +71,19 @@ function Set-DataverseTable
         [Alias("keyDescription")]
         [string] $PrimaryKeyDescription = "The primary identifier for the entity.",
 
+        [Parameter()]
+        [Alias("keyMaxLength")]
+        [int] $PrimaryKeyMaxLength = 100,
+
+        [Parameter()]
+        [Alias("enableSynapseLink")]
+        [bool] $EnableChangeTracking = $false,
+
+        [Parameter()]
+        [Alias("additionalProperties")]
+        $AdditionalAttributeMetadata = $null,
+
+        # Not currently used, but ensures that the column definitions do not break the cmdlet binding
         [Parameter(ValueFromRemainingArguments=$true)]
         $Remaining
     )
@@ -116,7 +133,7 @@ function Set-DataverseTable
                 FormatName = [ordered]@{
                     Value = "Text"
                 }
-                MaxLength = 100
+                MaxLength = $PrimaryKeyMaxLength
             }       
         )
         Description = [ordered]@{
@@ -154,6 +171,15 @@ function Set-DataverseTable
         IsActivity = $false
         OwnershipType = "UserOwned"
         SchemaName = $qualifiedName
+        LogicalName = $PrimaryKeyName
+        EnableChangeTracking = $EnableChangeTracking
+    }
+
+    # TODO: Refactor this to be pluggable and hence more extensible
+    if ($AdditionalAttributeMetadata) {
+        foreach ($key in $AdditionalAttributeMetadata.Keys) {
+            $data.Add($key, $AdditionalAttributeMetadata[$key])
+        }
     }
 
     $existingEntity = Get-DataverseTable -Name $Name -SchemaPrefix $SchemaPrefix
