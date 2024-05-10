@@ -63,7 +63,7 @@ Import-Module $BuildModulePath -RequiredVersion $BuildModuleVersion -Force
 
 # Set the required build options
 $PesterVersion = "5.5.0"
-$PesterTestsDir = "$here/module/functions"
+$PesterTestsDir = "$here/module"
 $PesterShowOptions = @("Describe","Failed","Summary")
 $PowerShellModulesToPublish = @(
     @{
