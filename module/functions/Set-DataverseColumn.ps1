@@ -100,10 +100,6 @@ function Set-DataverseColumn
         }
         SchemaName = $qualifiedName
         "@odata.type" = "Microsoft.Dynamics.CRM.$($Type)AttributeMetadata"
-        # FormatName = [ordered]@{
-        #     Value = "Text"  # todo
-        # }
-        # MaxLength = 100 # todo
     }
 
     # TODO: Refactor this to be pluggable and hence more extensible
@@ -114,10 +110,14 @@ function Set-DataverseColumn
     }
     # Provide some defaults for the certains types
     elseif ($Type -eq "String") {
-        $data.Add("FormatName", [ordered]@{
-            Value = "Text"  # todo
-        })
-        $data.Add("MaxLength", 100) # todo
+        if (!$AdditionalAttributeMetadata.ContainsKey("FormatName")) {
+            $data.Add("FormatName", [ordered]@{
+                    Value = "Text"
+                })
+        }
+        if (!$AdditionalAttributeMetadata.ContainsKey("MaxLength")) {
+            $data.Add("MaxLength", 100)
+        }
     }
     elseif ($Type -eq "Boolean") {
         $optionSet = [ordered]@{
