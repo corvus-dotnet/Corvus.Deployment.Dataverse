@@ -30,7 +30,6 @@ task EnsureDataverseEnvironment EnsurePowerPlatformCli,{
         ProfileName = $ProfileName
         EnvironmentUrl = $EnvironmentUrl
         TenantId = $TenantId
-        UseDeviceCodeFlow = $true
     }
     Connect-PowerPlatformCli @splat
 }
@@ -50,7 +49,7 @@ task EnsureDataverseSolution EnsureDataverseEnvironment,{
     }
 }
 
-task ConnectDataverse EnsureDataverseSolution,{
+task ConnectDataverse {
 
     Connect-DataverseEnvironment `
         -TenantId $TenantId `
