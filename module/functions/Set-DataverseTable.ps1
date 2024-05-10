@@ -175,7 +175,7 @@ function Set-DataverseTable
         OwnershipType = "UserOwned"
         SchemaName = $qualifiedName
         LogicalName = $PrimaryKeyName
-        EnableChangeTracking = $EnableChangeTracking
+        ChangeTrackingEnabled = $EnableChangeTracking
         IsAuditEnabled = @{
             Value = $EnableAuditing  
             CanBeChanged = $true
