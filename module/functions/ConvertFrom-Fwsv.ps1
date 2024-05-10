@@ -2,6 +2,24 @@
 # Copyright (c) Endjin Limited. All rights reserved.
 # </copyright>
 
+<#
+.SYNOPSIS
+Obtains an access token for the Dataverse environment.
+
+.DESCRIPTION
+Obtains an access token for the Dataverse environment that is used for other operations.
+
+.INPUTS
+The lines of a fixed-width space-separated tabulated values.
+
+.PARAMETER InputObject
+The lines of a fixed-width space-separated tabulated values.
+
+.PARAMETER Headers
+The column headers of tabulated values - used to determine width of each column in the tabulated values.
+
+#>
+
 function ConvertFrom-Fwsv {
     [CmdletBinding()]
     param (

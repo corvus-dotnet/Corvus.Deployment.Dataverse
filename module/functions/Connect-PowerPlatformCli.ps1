@@ -2,6 +2,27 @@
 # Copyright (c) Endjin Limited. All rights reserved.
 # </copyright>
 
+<#
+.SYNOPSIS
+Sets up or switches to a Power Platform CLI connection profile.
+
+.DESCRIPTION
+Sets up or switches to a Power Platform CLI connection profile.
+
+.PARAMETER ProfileName
+The path of the file containing the code.
+
+.PARAMETER EnvironmentUrl
+The Power Apps environment URL.
+
+.PARAMETER TenantId
+The Power Apps Tenant ID.
+
+.PARAMETER UseDeviceCodeFlow
+When specified, interactive authentication attempts will use the device code flow.
+
+#>
+
 function Connect-PowerPlatformCli
 {
     [CmdletBinding()]
@@ -117,6 +138,6 @@ function Connect-PowerPlatformCli
         & pac auth select -i $profileIndex | Write-Host -f Magenta
     }
 
-    $script:isPowerAppCliConnected = $true
+    $script:isPowerPlatformCliConnected = $true
     $script:powerAppEnvironmentUrl = $safeEnvironmentUrl
 }

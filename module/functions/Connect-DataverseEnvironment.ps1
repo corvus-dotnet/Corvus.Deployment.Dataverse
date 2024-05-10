@@ -2,6 +2,35 @@
 # Copyright (c) Endjin Limited. All rights reserved.
 # </copyright>
 
+<#
+.SYNOPSIS
+Obtains an access token for the Dataverse environment.
+
+.DESCRIPTION
+Obtains an access token for the Dataverse environment that is used for other operations.
+
+.PARAMETER TenantId
+The Power Apps Tenant ID.
+
+.PARAMETER EnvironmentUrl
+The Power Apps environment URL.
+
+.PARAMETER SolutionName
+The Power Apps solution name.
+
+.PARAMETER SchemaPrefix
+The schema prefix to be used when deploying Dataverse table definitions.
+
+.PARAMETER Scope
+The authentication scope.
+
+.PARAMETER ApiVersion
+The Dataverse REST API version.
+
+.PARAMETER ClientId
+The Azure AD application client ID used to authenticate.
+
+#>
 function Connect-DataverseEnvironment
 {
     [CmdletBinding()]

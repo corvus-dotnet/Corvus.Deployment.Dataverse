@@ -2,8 +2,33 @@
 # Copyright (c) Endjin Limited. All rights reserved.
 # </copyright>
 
+<#
+.SYNOPSIS
+Creates or updates a table in the Dataverse environment using the table name.
+
+.DESCRIPTION
+This function creates or updates a table in the Dataverse environment using the table name. 
+It uses an access token for authentication.
+
+.PARAMETER AccessToken
+The access token used for authentication. If not provided, the script will use the set having called
+the Connect-DataverseEnvironment function.
+
+.PARAMETER SchemaPrefix
+The schema prefix used for the Dataverse table. If not provided, the script will use the value of $script:schemaPrefix.
+
+.PARAMETER Name
+The name of the Dataverse table to set.
+
+.EXAMPLE
+Set-DataverseTable -Name "Account"
+
+This example sets the "Account" table in the Dataverse environment using the provided access token and schema prefix.
+#>
+
 function Set-DataverseTable
 {
+
     [CmdletBinding()]
     param (
         [Parameter()]

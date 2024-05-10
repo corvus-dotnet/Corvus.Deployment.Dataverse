@@ -2,6 +2,30 @@
 # Copyright (c) Endjin Limited. All rights reserved.
 # </copyright>
 
+<#
+.SYNOPSIS
+Sets a column in a Dataverse table using the column name.
+
+.DESCRIPTION
+This function sets a column in a specified Dataverse table using the column name. 
+It uses an access token for authentication.
+
+.PARAMETER AccessToken
+The access token used for authentication. If not provided, the script will use the set having called
+the Connect-DataverseEnvironment function.
+
+.PARAMETER Name
+The name of the Dataverse column to set.
+
+.PARAMETER Table
+The Dataverse table in which to set the column. This parameter can be specified as a Name, Id an object representing the table.
+
+.EXAMPLE
+Set-DataverseColumn -Name "AccountName" -Table $table
+
+This example sets the "AccountName" column in the specified Dataverse table using the provided access token.
+#>
+
 function Set-DataverseColumn
 {
     [CmdletBinding()]

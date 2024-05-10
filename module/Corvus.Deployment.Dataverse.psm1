@@ -26,7 +26,7 @@ Export-ModuleMember -Function ( $functions |
                     -Alias Corvus.Deployment.Dataverse.tasks
 
 # Set the required variables that are global to this module
-$script:isPowerAppCliConnected = $false
+$script:isPowerPlatformCliConnected = $false
 $script:schemaPrefix = ""
 $script:dataverseEnvironmentUrl = ""
 $script:solutionName = ""

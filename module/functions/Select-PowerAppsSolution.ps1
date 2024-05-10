@@ -2,13 +2,30 @@
 # Copyright (c) Endjin Limited. All rights reserved.
 # </copyright>
 
+<#
+.SYNOPSIS
+Obtains an access token for the Dataverse environment.
+
+.DESCRIPTION
+Obtains an access token for the Dataverse environment that is used for other operations.
+
+.PARAMETER SolutionName
+The Power Apps solution name.
+
+.PARAMETER ThrowIfNotFound
+When specified, an exception is thrown if the solution is not found.
+
+#>
+
 function Select-PowerAppsSolution {
     param (
+        [Parameter(Mandatory = $true)]
         [string]$SolutionName,
+        
         [switch]$ThrowIfNotFound
     )
 
-    if (!$isPowerAppCliConnected) {
+    if (!$isPowerPlatformCliConnected) {
         throw "PowerApps CLI is not connected - please run 'Connect-PowerPlatformCli' first"
     }
 
