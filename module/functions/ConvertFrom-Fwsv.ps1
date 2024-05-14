@@ -4,10 +4,11 @@
 
 <#
 .SYNOPSIS
-Obtains an access token for the Dataverse environment.
+Converts a string containing fixed-width, space-separated tabulated values into a PowerShell object.
 
 .DESCRIPTION
-Obtains an access token for the Dataverse environment that is used for other operations.
+Converts a string containing fixed-width, space-separated tabulated values into a PowerShell object.
+The column headers are used to determine the width of each column in the tabulated values.
 
 .INPUTS
 The lines of a fixed-width space-separated tabulated values.

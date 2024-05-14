@@ -80,7 +80,7 @@ function Connect-DataverseEnvironment
     {
         Write-Host "Attemping authentication via environment variables [ClientId=$env:AZURE_CLIENT_ID]"
         $authResult = Get-MsalToken -ClientId $env:AZURE_CLIENT_ID `
-                                    -Scopes $authScope `
+                                    -Scopes $Scope `
                                     -TenantId $env:AZURE_TENANT_ID `
                                     -ClientSecret ($env:AZURE_CLIENT_SECRET | ConvertTo-SecureString -AsPlainText)
     }
@@ -102,7 +102,7 @@ function Connect-DataverseEnvironment
             $authResult = Get-MsalToken -ClientId $ClientId `
                                         -TenantId $TenantId `
                                         -Interactive `
-                                        -Scopes $authScope |
+                                        -Scopes $Scope |
                                 Select-Object -ExpandProperty AccessToken
         }
     }

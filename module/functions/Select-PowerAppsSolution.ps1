@@ -4,10 +4,12 @@
 
 <#
 .SYNOPSIS
-Obtains an access token for the Dataverse environment.
+Checks whether a Power Apps solution exists and selects it for the current session.
 
 .DESCRIPTION
-Obtains an access token for the Dataverse environment that is used for other operations.
+Uses the Power Platform CLI to check whether a Power Apps solution exists in the current
+environment and selects it for the current session.  Requires that 'Connect-DataverseEnvironment'
+has been called first.
 
 .PARAMETER SolutionName
 The Power Apps solution name.

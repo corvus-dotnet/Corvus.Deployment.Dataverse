@@ -89,10 +89,10 @@ function Connect-PowerPlatformCli
             $pacAuthProfileIndex = $requiredProfile.Index
         }
         elseif (!$existingProfile -and $existingEnvironmentProfile) {
-            throw "A PowerApp CLI profile already exists for the target environment. [Profile=$ProfileName] [Environment=$EnvironmentUrl]"
+            throw "A PowerApp CLI profile already exists for the target environment. Either use this existing profile name or delete the profile.  [Profile=$($existingEnvironmentProfile.Name)] [Environment=$safeEnvironmentUrl]"
         }
         elseif ($existingProfile -and !$existingEnvironmentProfile) {
-            throw "The PowerApp CLI profile '$ProfileName' already exists, but is configured for a different PowerApp Environment URL. [TargetEnvironment=$EnvironmentUrl] [ActualEnvironment=$($existingProfile.Url)]"
+            throw "The PowerApp CLI profile '$ProfileName' already exists, but is configured for a different PowerApp Environment URL. Either use a different profile name or delete the existing profile. [TargetEnvironment=$safeEnvironmentUrl] [ActualEnvironment=$($existingProfile.Url)]"
         }
         else {
             Write-Host "No matching profiles found"
