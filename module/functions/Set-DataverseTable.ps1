@@ -2,8 +2,33 @@
 # Copyright (c) Endjin Limited. All rights reserved.
 # </copyright>
 
+<#
+.SYNOPSIS
+Creates or updates a table in the Dataverse environment using the table name.
+
+.DESCRIPTION
+This function creates or updates a table in the Dataverse environment using the table name. 
+It uses an access token for authentication.
+
+.PARAMETER AccessToken
+The access token used for authentication. If not provided, the script will use the set having called
+the Connect-DataverseEnvironment function.
+
+.PARAMETER SchemaPrefix
+The schema prefix used for the Dataverse table. If not provided, the script will use the value of $script:schemaPrefix.
+
+.PARAMETER Name
+The name of the Dataverse table to set.
+
+.EXAMPLE
+Set-DataverseTable -Name "Account"
+
+This example sets the "Account" table in the Dataverse environment using the provided access token and schema prefix.
+#>
+
 function Set-DataverseTable
 {
+
     [CmdletBinding()]
     param (
         [Parameter()]
@@ -35,6 +60,10 @@ function Set-DataverseTable
         [string] $PrimaryKeyType,
 
         [Parameter(Mandatory = $true)]
+        [Alias("keyName")]
+        [string] $PrimaryKeyName,
+
+        [Parameter(Mandatory = $true)]
         [Alias("keyDisplayName")]
         [string] $PrimaryKeyDisplayName,
 
@@ -42,6 +71,22 @@ function Set-DataverseTable
         [Alias("keyDescription")]
         [string] $PrimaryKeyDescription = "The primary identifier for the entity.",
 
+        [Parameter()]
+        [Alias("keyMaxLength")]
+        [int] $PrimaryKeyMaxLength = 100,
+
+        [Parameter()]
+        [Alias("enableSynapseLink")]
+        [bool] $EnableChangeTracking = $false,
+
+        [Parameter()]
+        [bool] $EnableAuditing = $false,
+
+        [Parameter()]
+        [Alias("additionalProperties")]
+        $AdditionalAttributeMetadata = $null,
+
+        # Not currently used, but ensures that the column definitions do not break the cmdlet binding
         [Parameter(ValueFromRemainingArguments=$true)]
         $Remaining
     )
@@ -91,7 +136,7 @@ function Set-DataverseTable
                 FormatName = [ordered]@{
                     Value = "Text"
                 }
-                MaxLength = 100
+                MaxLength = $PrimaryKeyMaxLength
             }       
         )
         Description = [ordered]@{
@@ -129,6 +174,20 @@ function Set-DataverseTable
         IsActivity = $false
         OwnershipType = "UserOwned"
         SchemaName = $qualifiedName
+        LogicalName = $PrimaryKeyName
+        ChangeTrackingEnabled = $EnableChangeTracking
+        IsAuditEnabled = @{
+            Value = $EnableAuditing  
+            CanBeChanged = $true
+            ManagedPropertyLogicalName = "canmodifyauditsettings"  
+        }
+    }
+
+    # TODO: Refactor this to be pluggable and hence more extensible
+    if ($AdditionalAttributeMetadata) {
+        foreach ($key in $AdditionalAttributeMetadata.Keys) {
+            $data.Add($key, $AdditionalAttributeMetadata[$key])
+        }
     }
 
     $existingEntity = Get-DataverseTable -Name $Name -SchemaPrefix $SchemaPrefix
@@ -146,6 +205,7 @@ function Set-DataverseTable
 
     # Convert the data to JSON
     $jsonData = $data | ConvertTo-Json -Depth 100
+    Write-Verbose $jsonData
 
     # Send the HTTP request
     $statusCode = $null

@@ -62,14 +62,15 @@ Import-Module $BuildModulePath -RequiredVersion $BuildModuleVersion -Force
 #endregion
 
 # Set the required build options
-$PesterTestsDir = "$here/module/functions"
+$PesterVersion = "5.5.0"
+$PesterTestsDir = "$here/module"
 $PesterShowOptions = @("Describe","Failed","Summary")
 $PowerShellModulesToPublish = @(
     @{
         ModulePath = "$here/module/Corvus.Deployment.Dataverse.psd1"
         FunctionsToExport = @("*")
         CmdletsToExport = @()
-        AliasesToExport = @()
+        AliasesToExport = @("Corvus.Deployment.Dataverse.tasks")
     }
 )
 $PowerShellGalleryApiKey = $env:PSGALLERY_API_KEY

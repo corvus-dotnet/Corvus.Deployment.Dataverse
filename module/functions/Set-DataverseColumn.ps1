@@ -2,6 +2,30 @@
 # Copyright (c) Endjin Limited. All rights reserved.
 # </copyright>
 
+<#
+.SYNOPSIS
+Sets a column in a Dataverse table using the column name.
+
+.DESCRIPTION
+This function sets a column in a specified Dataverse table using the column name. 
+It uses an access token for authentication.
+
+.PARAMETER AccessToken
+The access token used for authentication. If not provided, the script will use the set having called
+the Connect-DataverseEnvironment function.
+
+.PARAMETER Name
+The name of the Dataverse column to set.
+
+.PARAMETER Table
+The Dataverse table in which to set the column. This parameter can be specified as a Name, Id an object representing the table.
+
+.EXAMPLE
+Set-DataverseColumn -Name "AccountName" -Table $table
+
+This example sets the "AccountName" column in the specified Dataverse table using the provided access token.
+#>
+
 function Set-DataverseColumn
 {
     [CmdletBinding()]
@@ -28,6 +52,10 @@ function Set-DataverseColumn
         [ValidateSet("String","Money","DateTime","Boolean","Decimal","Integer","Memo","Uniqueidentifier")]
         # TODO: "Lookup","Picklist","State","Status","Uniqueidentifier","Virtual","BigInt","ManagedProperty","EntityName","CalendarRules","VirtualCollection","EntityCollection","BigDateTime","ManagedPropertyCollection","EntityNameReference","EntityCollectionWithAttributes","EntityReference","EntityReferenceWithAttributes","StringType","MemoType","IntegerType","BigIntType","DoubleType","DecimalType","MoneyType","BooleanType","DateTimeType","LookupType","OwnerType","UniqueidentifierType","StateType","StatusType","VirtualType","ManagedPropertyType","EntityNameType","CalendarRulesType","VirtualCollectionType","EntityCollectionType","BigDateTimeType","ManagedPropertyCollectionType","EntityNameReferenceType","EntityCollectionWithAttributesType","EntityReferenceType","EntityReferenceWithAttributesType"
         [string] $Type,
+
+        [Parameter()]
+        [ValidateSet("None","SystemRequired","ApplicationRequired","Recommended")]
+        [string] $RequiredLevel = "Recommended",
 
         [Parameter()]
         [ValidateNotNullOrEmpty()]
@@ -70,16 +98,12 @@ function Set-DataverseColumn
             )
         }
         RequiredLevel = [ordered]@{
-            Value = "None"
+            Value = $RequiredLevel
             CanBeChanged = $true
             ManagedPropertyLogicalName = "canmodifyrequirementlevelsettings"
         }
         SchemaName = $qualifiedName
         "@odata.type" = "Microsoft.Dynamics.CRM.$($Type)AttributeMetadata"
-        # FormatName = [ordered]@{
-        #     Value = "Text"  # todo
-        # }
-        # MaxLength = 100 # todo
     }
 
     # TODO: Refactor this to be pluggable and hence more extensible
@@ -90,10 +114,14 @@ function Set-DataverseColumn
     }
     # Provide some defaults for the certains types
     elseif ($Type -eq "String") {
-        $data.Add("FormatName", [ordered]@{
-            Value = "Text"  # todo
-        })
-        $data.Add("MaxLength", 100) # todo
+        if (!$AdditionalAttributeMetadata.ContainsKey("FormatName")) {
+            $data.Add("FormatName", [ordered]@{
+                    Value = "Text"
+                })
+        }
+        if (!$AdditionalAttributeMetadata.ContainsKey("MaxLength")) {
+            $data.Add("MaxLength", 100)
+        }
     }
     elseif ($Type -eq "Boolean") {
         $optionSet = [ordered]@{
@@ -151,6 +179,7 @@ function Set-DataverseColumn
 
     # Convert the data to JSON
     $jsonData = $data | ConvertTo-Json -Depth 100
+    Write-Verbose $jsonData
 
     # Send the HTTP request
     $statusCode = $null
