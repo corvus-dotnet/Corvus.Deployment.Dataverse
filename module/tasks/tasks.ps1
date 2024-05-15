@@ -1,4 +1,4 @@
-$VerboseLogging = property VerboseLogging $false
+$VerboseLogging = [bool](property 'VerboseLogging' ($VerbosePreference -eq "Continue"))
 
 $EnvironmentUrl = property PowerAppsEnvironmentUrl ''
 $ProfileName = property PowerAppsAuthProfileName ''
