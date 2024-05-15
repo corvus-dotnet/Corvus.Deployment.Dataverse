@@ -18,10 +18,16 @@ task CheckParameters {
     if (!$SkipPacCli) { $requiredVars += 'ProfileName' }
     if (!$SolutionPath) { $requiredVars += 'SolutionName' }
 
+    $isValid = $true
     $requiredVars | ForEach-Object {
         if (-not (Get-Variable -Name $_ -ValueOnly)) {
-            Write-Error "Variable '`$$_' is required, but currently undefined" -ErrorAction Continue
+            Write-Build Red "Variable '`$$_' is required, but currently undefined"
+            $isValid = $false
         }
+    }
+
+    if (!$isValid) {
+        throw "Required variables are missing - check previous messages."
     }
 }
 
