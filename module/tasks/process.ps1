@@ -1,4 +1,5 @@
-task Deploy EnsureDataverseEnvironment,
+task Deploy CheckParameters,
+            EnsureDataverseEnvironment,
             EnsureDataverseSolution,
             ConnectDataverse,
             DeployDataverseTables

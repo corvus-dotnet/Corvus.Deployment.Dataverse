@@ -10,14 +10,17 @@ $TableDefinitionsPath = property TableDefinitionsPath (Join-Path $here "tables")
 $TenantId = property TenantId ''
 
 task CheckParameters {
-    if (!$SolutionPath) {
-        throw "$SolutionPath is required"
-    }
-    if (!$SolutionPackagePath) {
-        throw "$SolutionPackagePath is required"
-    }
+    $requiredVars = @('EnvironmentUrl', 'SchemaPrefix', 'TenantId')
+    if (!$SkipPacCli) { $requiredVars += 'ProfileName' }
+    if (!$SolutionPath) { $requiredVars += 'SolutionName' }
 
+    $requiredVars | ForEach-Object {
+        if (-not (Get-Variable -Name $_ -ValueOnly)) {
+            Write-Error "Variable '`$$_' is required, but currently undefined" -ErrorAction Continue
+        }
+    }
 }
+
 # Synopsis: Ensures the cross-platform Power Apps CLI .NET global tool is available
 task EnsurePowerPlatformCli {
     $toolName = "Microsoft.PowerApps.CLI.Tool"
@@ -72,8 +75,3 @@ task DeployDataverseTables {
         }
     }
 }
-
-task Deploy EnsureDataverseEnvironment,
-            EnsureDataverseSolution,
-            ConnectDataverse,
-            DeployDataverseTables
