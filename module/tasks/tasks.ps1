@@ -6,7 +6,6 @@ $ProfileName = property PowerAppsAuthProfileName ''
 $SchemaPrefix = property DataverseSchemaPrefix ''
 $SolutionName = property PowerAppsSolutionName ''
 $SolutionPath = property SolutionPath ''
-$SolutionPackagePath = property SolutionPackagePath ''
 $TableDefinitionsPath = property TableDefinitionsPath (Join-Path $here "tables")
 $TenantId = property TenantId ''
 
@@ -63,7 +62,7 @@ task ConnectDataverse {
         -TenantId $TenantId `
         -EnvironmentUrl $EnvironmentUrl `
         -SolutionName $SolutionName `
-        -SchemaPrefix $SchemaPrefix              # TODO: Consider reading from Solution.xml?
+        -SchemaPrefix $SchemaPrefix
 }
 
 task DeployDataverseTables {
