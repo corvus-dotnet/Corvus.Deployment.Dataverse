@@ -1,3 +1,4 @@
+$SkipPacCli = [bool](property 'SkipPacCli' $false)
 $VerboseLogging = [bool](property 'VerboseLogging' ($VerbosePreference -eq "Continue"))
 
 $EnvironmentUrl = property PowerAppsEnvironmentUrl ''
@@ -8,6 +9,10 @@ $SolutionPath = property SolutionPath ''
 $SolutionPackagePath = property SolutionPackagePath ''
 $TableDefinitionsPath = property TableDefinitionsPath (Join-Path $here "tables")
 $TenantId = property TenantId ''
+
+task SetSkipPacCli {
+    $script:SkipPacCli = $true
+}
 
 task CheckParameters {
     $requiredVars = @('EnvironmentUrl', 'SchemaPrefix', 'TenantId')
@@ -22,12 +27,12 @@ task CheckParameters {
 }
 
 # Synopsis: Ensures the cross-platform Power Apps CLI .NET global tool is available
-task EnsurePowerPlatformCli {
+task EnsurePowerPlatformCli -If {!$SkipPacCli} {
     $toolName = "Microsoft.PowerApps.CLI.Tool"
     Install-DotNetTool $toolName
 }
 
-task EnsureDataverseEnvironment EnsurePowerPlatformCli,{
+task EnsureDataverseEnvironment -If {!$SkipPacCli} EnsurePowerPlatformCli,{
 
     $splat = @{
         ProfileName = $ProfileName
