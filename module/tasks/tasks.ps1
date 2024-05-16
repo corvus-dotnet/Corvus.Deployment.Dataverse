@@ -81,7 +81,7 @@ task DeployDataverseTables {
         $tableId = Set-DataverseTable @tableDefinition -Verbose:$VerboseLogging
 
         foreach ($column in $tableDefinition.columns) {
-            $columnId = $tableId | Set-DataverseColumn @column -Verbose:$VerboseLogging
+            $tableId | Set-DataverseColumn @column -Verbose:$VerboseLogging | Out-Null
         }
     }
 }

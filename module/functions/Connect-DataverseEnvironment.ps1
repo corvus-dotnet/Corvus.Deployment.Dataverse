@@ -59,7 +59,7 @@ function Connect-DataverseEnvironment
     )
 
 
-    if ($script:dataverseAccessToken -ne $null)
+    if ($null -ne $script:dataverseAccessToken)
     {
         Write-Host "Using existing Dataverse connection" -f Green
         return
