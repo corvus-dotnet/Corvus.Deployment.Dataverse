@@ -51,10 +51,6 @@ function Connect-DataverseEnvironment
 
         [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [string] $Scope = "user_impersonation",
-
-        [Parameter()]
-        [ValidateNotNullOrEmpty()]
         [string] $ApiVersion = "v9.2",
 
         [Parameter()]
@@ -80,7 +76,7 @@ function Connect-DataverseEnvironment
     {
         Write-Host "Attemping authentication via environment variables [ClientId=$env:AZURE_CLIENT_ID]"
         $authResult = Get-MsalToken -ClientId $env:AZURE_CLIENT_ID `
-                                    -Scopes $Scope `
+                                    -Scopes "$safeEnvironmentUrl/.default" `
                                     -TenantId $env:AZURE_TENANT_ID `
                                     -ClientSecret ($env:AZURE_CLIENT_SECRET | ConvertTo-SecureString -AsPlainText)
     }
@@ -102,7 +98,7 @@ function Connect-DataverseEnvironment
             $authResult = Get-MsalToken -ClientId $ClientId `
                                         -TenantId $TenantId `
                                         -Interactive `
-                                        -Scopes $Scope |
+                                        -Scopes "user_impersonation" |
                                 Select-Object -ExpandProperty AccessToken
         }
     }
