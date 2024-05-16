@@ -104,7 +104,7 @@ function Connect-PowerPlatformCli
 
         $createAuthArgs = @(
             "--name", $ProfileName
-            "--url", $safeEnvironmentUrl
+            "--environment", $safeEnvironmentUrl
             "--tenant", $TenantId
         )
         # Create SPN-based auth profile
@@ -112,6 +112,7 @@ function Connect-PowerPlatformCli
             $createAuthArgs += @(
                 "--applicationId", $env:AZURE_CLIENT_ID
                 "--clientSecret", $env:AZURE_CLIENT_SECRET
+                "--accept-cleartext-caching"
             )
         }
         # Create Managed Identity-based auth profile

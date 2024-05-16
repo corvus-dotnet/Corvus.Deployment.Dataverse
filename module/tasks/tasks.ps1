@@ -1,30 +1,43 @@
-$VerboseLogging = property VerboseLogging $false
+$SkipPacCli = [bool](property 'SkipPacCli' $false)
+$VerboseLogging = [bool](property 'VerboseLogging' ($VerbosePreference -eq "Continue"))
 
 $EnvironmentUrl = property PowerAppsEnvironmentUrl ''
 $ProfileName = property PowerAppsAuthProfileName ''
 $SchemaPrefix = property DataverseSchemaPrefix ''
 $SolutionName = property PowerAppsSolutionName ''
 $SolutionPath = property SolutionPath ''
-$SolutionPackagePath = property SolutionPackagePath ''
 $TableDefinitionsPath = property TableDefinitionsPath (Join-Path $here "tables")
 $TenantId = property TenantId ''
 
+task SetSkipPacCli {
+    $script:SkipPacCli = $true
+}
+
 task CheckParameters {
-    if (!$SolutionPath) {
-        throw "$SolutionPath is required"
-    }
-    if (!$SolutionPackagePath) {
-        throw "$SolutionPackagePath is required"
+    $requiredVars = @('EnvironmentUrl', 'SchemaPrefix', 'TenantId')
+    if (!$SkipPacCli) { $requiredVars += 'ProfileName' }
+    if (!$SolutionPath) { $requiredVars += 'SolutionName' }
+
+    $isValid = $true
+    $requiredVars | ForEach-Object {
+        if (-not (Get-Variable -Name $_ -ValueOnly)) {
+            Write-Build Red "Variable '`$$_' is required, but currently undefined"
+            $isValid = $false
+        }
     }
 
+    if (!$isValid) {
+        throw "Required variables are missing - check previous messages."
+    }
 }
+
 # Synopsis: Ensures the cross-platform Power Apps CLI .NET global tool is available
-task EnsurePowerPlatformCli {
+task EnsurePowerPlatformCli -If {!$SkipPacCli} {
     $toolName = "Microsoft.PowerApps.CLI.Tool"
     Install-DotNetTool $toolName
 }
 
-task EnsureDataverseEnvironment EnsurePowerPlatformCli,{
+task EnsureDataverseEnvironment -If {!$SkipPacCli} EnsurePowerPlatformCli,{
 
     $splat = @{
         ProfileName = $ProfileName
@@ -55,7 +68,7 @@ task ConnectDataverse {
         -TenantId $TenantId `
         -EnvironmentUrl $EnvironmentUrl `
         -SolutionName $SolutionName `
-        -SchemaPrefix $SchemaPrefix              # TODO: Consider reading from Solution.xml?
+        -SchemaPrefix $SchemaPrefix
 }
 
 task DeployDataverseTables {
@@ -68,12 +81,7 @@ task DeployDataverseTables {
         $tableId = Set-DataverseTable @tableDefinition -Verbose:$VerboseLogging
 
         foreach ($column in $tableDefinition.columns) {
-            $columnId = $tableId | Set-DataverseColumn @column -Verbose:$VerboseLogging
+            $tableId | Set-DataverseColumn @column -Verbose:$VerboseLogging | Out-Null
         }
     }
 }
-
-task Deploy EnsureDataverseEnvironment,
-            EnsureDataverseSolution,
-            ConnectDataverse,
-            DeployDataverseTables
