@@ -104,7 +104,7 @@ function Connect-PowerPlatformCli
 
         $createAuthArgs = @(
             "--name", $ProfileName
-            "--url", $safeEnvironmentUrl
+            "--environment", $safeEnvironmentUrl
             "--tenant", $TenantId
         )
         # Create SPN-based auth profile
